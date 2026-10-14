@@ -22,6 +22,9 @@ a {
    switches themes by writing these same custom properties directly on
    :root (document.documentElement.style) — these values are only the
    initial/fallback set, not a second source of truth. */
+/* Note: this :root block is the dark theme (default). The light theme
+   values live in js/main.js (THEMES.light) and in the anti-FOUC inline
+   script in index.html — keep all three in sync when changing a color. */
 :root {
   --color-bg: #0a0a0a;
   --color-text: #e0e0e0;
@@ -390,7 +393,7 @@ section {
   justify-content: center;
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  color: var(--color-text-subtle);
+  color: var(--color-text-muted);
 }
 
 .about__text {

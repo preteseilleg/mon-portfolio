@@ -2,30 +2,46 @@
 
 const navToggle = document.getElementById('navToggle');
 const nav = document.getElementById('siteNav');
+const mainContent = document.querySelector('main');
+const siteFooter = document.querySelector('footer');
 
-function closeNav() {
-  nav.classList.remove('is-open');
-  navToggle.classList.remove('is-open');
-  navToggle.setAttribute('aria-expanded', 'false');
-  document.body.classList.remove('nav-open');
+// While the mobile nav overlay is open, main/footer sit visually behind it
+// but would still be reachable by keyboard without this — `inert` removes
+// them from both focus order and the accessibility tree until it closes.
+function setNavOpen(isOpen) {
+  nav.classList.toggle('is-open', isOpen);
+  navToggle.classList.toggle('is-open', isOpen);
+  navToggle.setAttribute('aria-expanded', String(isOpen));
+  navToggle.setAttribute('aria-label', isOpen ? 'Fermer le menu' : 'Ouvrir le menu');
+  document.body.classList.toggle('nav-open', isOpen);
+  mainContent.inert = isOpen;
+  siteFooter.inert = isOpen;
+}
+
+function closeNav({ returnFocus = false } = {}) {
+  setNavOpen(false);
+  if (returnFocus) {
+    navToggle.focus();
+  }
 }
 
 function toggleNav() {
-  const isOpen = nav.classList.toggle('is-open');
-  navToggle.classList.toggle('is-open', isOpen);
-  navToggle.setAttribute('aria-expanded', String(isOpen));
-  document.body.classList.toggle('nav-open', isOpen);
+  const isOpen = !nav.classList.contains('is-open');
+  setNavOpen(isOpen);
+  if (isOpen) {
+    nav.querySelector('a').focus();
+  }
 }
 
 navToggle.addEventListener('click', toggleNav);
 
 nav.querySelectorAll('a').forEach((link) => {
-  link.addEventListener('click', closeNav);
+  link.addEventListener('click', () => closeNav());
 });
 
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') {
-    closeNav();
+    closeNav({ returnFocus: true });
   }
 });
 
@@ -51,7 +67,7 @@ const THEMES = {
     '--color-text-muted': '#4a4a4a',
     '--color-text-subtle': '#767676',
     '--color-border': '#e0e0e0',
-    '--color-accent': '#0d9373',
+    '--color-accent': '#0a7a60',
     '--color-surface': '#f5f5f5',
     '--color-header-bg': 'rgb(255 255 255 / 70%)',
   },
