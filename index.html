@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Portfolio de développeur en formation, construisant des projets concrets avec l'IA et Claude Code.">
+  <title>MonPortfolio</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%230a0a0a'/%3E%3Ctext x='12' y='17' font-family='system-ui,sans-serif' font-size='13' font-weight='700' fill='%2364ffda' text-anchor='middle'%3EM%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    // Applied before first paint to avoid a light/dark flash on load.
+    // Mirrors the preference logic and light-theme values in js/main.js —
+    // dark is the :root default in css/style.css, so only light needs to
+    // be written here.
+    (function () {
+      var stored = localStorage.getItem('theme');
+      var theme = stored === 'light' || stored === 'dark'
+        ? stored
+        : (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      if (theme === 'light') {
+        var root = document.documentElement.style;
+        root.setProperty('--color-bg', '#ffffff');
+        root.setProperty('--color-text', '#1a1a1a');
+        root.setProperty('--color-text-muted', '#4a4a4a');
+        root.setProperty('--color-text-subtle', '#767676');
+        root.setProperty('--color-border', '#e0e0e0');
+        root.setProperty('--color-accent', '#0d9373');
+        root.setProperty('--color-surface', '#f5f5f5');
+        root.setProperty('--color-header-bg', 'rgb(255 255 255 / 70%)');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <a href="#hero" class="logo">MonPortfolio</a>
+
+    <div class="site-header__right">
+      <nav class="nav" id="siteNav">
+        <a href="#about">À propos</a>
+        <a href="#projects">Projets</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <button type="button" class="theme-toggle" id="themeToggle" aria-label="Activer le mode clair">
+        <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+        </svg>
+        <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"></path>
+        </svg>
+      </button>
+
+      <button type="button" class="nav-toggle" id="navToggle" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="siteNav">
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section id="hero" class="hero">
+      <h1>Votre Prénom</h1>
+      <p class="subtitle">Développeur en formation</p>
+      <p class="tagline">Je construis des projets concrets avec l'IA.</p>
+      <a href="#projects" class="btn">Voir mes projets</a>
+    </section>
+
+    <section id="about" class="about">
+      <h2 class="about__title">À propos</h2>
+      <div class="about__content">
+        <div class="about__photo">
+          <span>Photo</span>
+        </div>
+        <p class="about__text">Passionné par la technologie et l'intelligence artificielle, j'apprends à construire des projets concrets en utilisant les outils les plus avancés du marché. Ce portfolio est lui-même construit avec Claude Code.</p>
+      </div>
+    </section>
+
+    <section id="projects" class="projects">
+      <h2>Mes Projets</h2>
+      <div class="project-grid" id="projectGrid"></div>
+    </section>
+
+    <section id="contact" class="contact">
+      <h2>Me contacter</h2>
+      <form class="contact-form">
+        <div class="form-field">
+          <label for="contact-name" class="form-field__label">Nom</label>
+          <input type="text" id="contact-name" name="name" class="form-field__input">
+        </div>
+
+        <div class="form-field">
+          <label for="contact-email" class="form-field__label">Email</label>
+          <input type="email" id="contact-email" name="email" class="form-field__input">
+        </div>
+
+        <div class="form-field">
+          <label for="contact-message" class="form-field__label">Message</label>
+          <textarea id="contact-message" name="message" class="form-field__input form-field__input--textarea" rows="5"></textarea>
+        </div>
+
+        <button type="button" class="btn btn--accent">Envoyer</button>
+      </form>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; 2026 · <a href="#">GitHub</a> · <a href="#">LinkedIn</a></p>
+    <p>Construit avec Claude Code</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

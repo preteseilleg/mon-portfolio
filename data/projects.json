@@ -1,0 +1,32 @@
+[
+  {
+    "name": "hello-python",
+    "description": "Script Python minimal Hello World",
+    "languages": ["Python"],
+    "url": "https://github.com/preteseilleg/hello-python"
+  },
+  {
+    "name": "mon-portfolio",
+    "description": "Portfolio - à pousser au Module 7",
+    "languages": [],
+    "url": "https://github.com/preteseilleg/mon-portfolio"
+  },
+  {
+    "name": "notes-cli",
+    "description": "Placeholder pour un futur outil CLI de notes",
+    "languages": [],
+    "url": "https://github.com/preteseilleg/notes-cli"
+  },
+  {
+    "name": "tuto",
+    "description": "test hello",
+    "languages": [],
+    "url": "https://github.com/preteseilleg/tuto"
+  },
+  {
+    "name": "hello",
+    "description": "Pas de description disponible.",
+    "languages": [],
+    "url": "https://github.com/preteseilleg/hello"
+  }
+]
