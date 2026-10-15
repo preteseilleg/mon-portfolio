@@ -1,0 +1,115 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Vérifier que index.html existe
+        run: test -f index.html
+
+      - name: Vérifier la syntaxe JS
+        run: |
+          status=0
+          while IFS= read -r -d '' file; do
+            node --check "$file" || status=1
+          done < <(find . -name "*.js" -not -path "./.git/*" -print0)
+          exit $status
+
+      - name: Vérifier la syntaxe CSS (accolades équilibrées)
+        run: |
+          status=0
+          while IFS= read -r -d '' file; do
+            open=$(grep -o "{" "$file" | wc -l)
+            close=$(grep -o "}" "$file" | wc -l)
+            if [ "$open" != "$close" ]; then
+              echo "::error file=$file::Accolades non équilibrées ($open ouvrantes, $close fermantes)"
+              status=1
+            fi
+          done < <(find . -name "*.css" -not -path "./.git/*" -print0)
+          exit $status
+
+      - name: Valider le HTML (balises non fermées)
+        run: |
+          python3 - <<'PY'
+          import glob
+          import pathlib
+          import sys
+          from html.parser import HTMLParser
+
+          VOID_TAGS = {
+              "area", "base", "br", "col", "embed", "hr", "img", "input",
+              "link", "meta", "param", "source", "track", "wbr",
+          }
+
+          class TagChecker(HTMLParser):
+              def __init__(self, filename):
+                  super().__init__()
+                  self.filename = filename
+                  self.stack = []
+                  self.errors = []
+
+              def handle_starttag(self, tag, attrs):
+                  if tag not in VOID_TAGS:
+                      self.stack.append(tag)
+
+              def handle_endtag(self, tag):
+                  if tag in self.stack:
+                      while self.stack[-1] != tag:
+                          self.errors.append(
+                              f"{self.filename}: balise <{self.stack.pop()}> jamais fermée avant </{tag}>"
+                          )
+                      self.stack.pop()
+                  else:
+                      self.errors.append(f"{self.filename}: balise fermante </{tag}> inattendue")
+
+          exit_code = 0
+          for filename in glob.glob("**/*.html", recursive=True):
+              if ".git" in filename.split("/"):
+                  continue
+              content = pathlib.Path(filename).read_text(encoding="utf-8")
+              checker = TagChecker(filename)
+              checker.feed(content)
+              for leftover in checker.stack:
+                  checker.errors.append(f"{filename}: balise <{leftover}> jamais fermée")
+              for err in checker.errors:
+                  print(f"::error::{err}")
+                  exit_code = 1
+
+          sys.exit(exit_code)
+          PY
+
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configurer GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Préparer l'artefact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Déployer sur GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
